@@ -1,0 +1,57 @@
+name: Build and Push albums-api to ACR
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    env:
+      IMAGE_NAME: albums-api
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to Azure Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ secrets.ACR_LOGIN_SERVER }}
+          username: ${{ secrets.ACR_USERNAME }}
+          password: ${{ secrets.ACR_PASSWORD }}
+
+      - name: Create CI Dockerfile for albums-api
+        run: |
+          cat > albums-api/Dockerfile.ci <<'EOF'
+          FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+          WORKDIR /src
+          COPY albums-api/albums-api.csproj albums-api/
+          RUN dotnet restore albums-api/albums-api.csproj
+          COPY . .
+          RUN dotnet publish albums-api/albums-api.csproj -c Release -o /app/publish /p:UseAppHost=false
+
+          FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
+          WORKDIR /app
+          COPY --from=build /app/publish .
+          EXPOSE 8080
+          ENV ASPNETCORE_URLS=http://+:8080
+          ENTRYPOINT ["dotnet", "albums-api.dll"]
+          EOF
+
+      - name: Build and push albums-api image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: albums-api/Dockerfile.ci
+          push: true
+          tags: |
+            ${{ secrets.ACR_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:latest
+            ${{ secrets.ACR_LOGIN_SERVER }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
