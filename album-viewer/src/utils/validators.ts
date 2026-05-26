@@ -1,8 +1,8 @@
 /**
- * Validates a French date string (jj/mm/aaaa) and returns a Date when valid.
+ * Validates a Belgian date string (dd/mm/yyyy) and returns a Date when valid.
  */
 export function validateDate(input: string): Date | null {
-  const match = /^\s*(\d{1,2})\/(\d{1,2})\/(\d{4})\s*$/.exec(input)
+  const match = /^\s*(\d{2})\/(\d{2})\/(\d{4})\s*$/.exec(input)
   if (!match) {
     return null
   }
