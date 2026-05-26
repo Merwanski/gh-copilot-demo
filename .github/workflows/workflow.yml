@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - main
+    paths:
+      - albums-api/**
+      - .github/workflows/workflow.yml
 
 jobs:
   build-and-push:
