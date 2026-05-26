@@ -28,3 +28,24 @@ export function validateDate(input: string): Date | null {
 
   return parsedDate
 }
+
+/**
+ * Validates the canonical format of a GUID string.
+ */
+export function validateGuid(input: string): boolean {
+  const guidRegex = /^\{?[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}\}?$/
+  return guidRegex.test(input.trim())
+}
+
+/**
+ * Validates the format of an IPv6 address string.
+ */
+export function validateIPV6(input: string): boolean {
+  const value = input.trim()
+
+  // Covers full and compressed IPv6 notations.
+  const ipv6Regex =
+    /^(?:(([0-9A-Fa-f]{1,4}:){7}([0-9A-Fa-f]{1,4}|:))|(([0-9A-Fa-f]{1,4}:){1,7}:)|(([0-9A-Fa-f]{1,4}:){1,6}:[0-9A-Fa-f]{1,4})|(([0-9A-Fa-f]{1,4}:){1,5}(:[0-9A-Fa-f]{1,4}){1,2})|(([0-9A-Fa-f]{1,4}:){1,4}(:[0-9A-Fa-f]{1,4}){1,3})|(([0-9A-Fa-f]{1,4}:){1,3}(:[0-9A-Fa-f]{1,4}){1,4})|(([0-9A-Fa-f]{1,4}:){1,2}(:[0-9A-Fa-f]{1,4}){1,5})|([0-9A-Fa-f]{1,4}:((:[0-9A-Fa-f]{1,4}){1,6}))|(:(:[0-9A-Fa-f]{1,4}){1,7}|:))$/
+
+  return ipv6Regex.test(value)
+}
