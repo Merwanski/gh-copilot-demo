@@ -1,8 +1,8 @@
-import { describe, expect, it } from 'vitest'
-import { validateDate, validateGuid, validateIPV6 } from './validators'
+import { describe, expect, it } from "vitest"
+import { validateDate, validateGuid, validateIPV6 } from "./validators"
 
 describe('validateDate', () => {
-  it('returns a Date for a valid French date', () => {
+  it('returns a Date for a valid Belgian date', () => {
     const result = validateDate('26/05/2026')
 
     expect(result).toBeInstanceOf(Date)
@@ -21,6 +21,7 @@ describe('validateDate', () => {
   it('returns null for invalid format', () => {
     expect(validateDate('2026-05-26')).toBeNull()
     expect(validateDate('26-05-2026')).toBeNull()
+    expect(validateDate('1/1/2026')).toBeNull()
   })
 
   it('returns null for impossible dates', () => {
