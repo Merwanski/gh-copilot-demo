@@ -1,13 +1,6 @@
 name: Build and Deploy
 on:
-  push:
-    branches: [main]
-    # Publish semver tags as releases.
-    tags: ["v*.*.*"]
-    paths-ignore:
-      - "README.md"
-      - ".vscode/**"
-      - "assets/**"
+  # Manual only to avoid overlapping with workflow.yml.
   workflow_dispatch:
 
 env:
@@ -41,7 +34,7 @@ jobs:
       matrix:
         services:
           [
-            { "appName": "album-api", "directory": "./album-api" },
+            { "appName": "album-api", "directory": "./albums-api" },
             { "appName": "album-viewer", "directory": "./album-viewer" },
           ]
     steps:
