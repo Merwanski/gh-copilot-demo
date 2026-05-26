@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { validateDate } from './validators'
+import { validateDate, validateGuid, validateIPV6 } from './validators'
 
 describe('validateDate', () => {
   it('returns a Date for a valid French date', () => {
@@ -33,5 +33,34 @@ describe('validateDate', () => {
 
     expect(result).toBeInstanceOf(Date)
     expect(result?.getDate()).toBe(29)
+  })
+})
+
+describe('validateGuid', () => {
+  it('returns true for a valid GUID', () => {
+    expect(validateGuid('550e8400-e29b-41d4-a716-446655440000')).toBe(true)
+  })
+
+  it('returns true for a valid GUID with braces', () => {
+    expect(validateGuid('{550e8400-e29b-41d4-a716-446655440000}')).toBe(true)
+  })
+
+  it('returns false for an invalid GUID', () => {
+    expect(validateGuid('550e8400e29b41d4a716446655440000')).toBe(false)
+    expect(validateGuid('invalid-guid')).toBe(false)
+  })
+})
+
+describe('validateIPV6', () => {
+  it('returns true for full and compressed IPv6', () => {
+    expect(validateIPV6('2001:0db8:85a3:0000:0000:8a2e:0370:7334')).toBe(true)
+    expect(validateIPV6('2001:db8::1')).toBe(true)
+    expect(validateIPV6('::1')).toBe(true)
+  })
+
+  it('returns false for invalid IPv6', () => {
+    expect(validateIPV6('2001:db8:::1')).toBe(false)
+    expect(validateIPV6('192.168.1.1')).toBe(false)
+    expect(validateIPV6('not-an-ip')).toBe(false)
   })
 })
