@@ -12,16 +12,40 @@ namespace albums_api.Controllers
     [ApiController]
     public class AlbumController : ControllerBase
     {
-        // GET: api/album
+        // Usage:
+        // - GET /albums
+        // - GET /albums?sortBy=title
+        // - GET /albums?sortBy=artist
+        // - GET /albums?sortBy=price
         [HttpGet]
-        public IActionResult Get()
+        public IActionResult Get([FromQuery] string? sortBy)
         {
             var albums = Album.GetAll();
 
-            return Ok(albums);
+            if (string.IsNullOrWhiteSpace(sortBy))
+            {
+                return Ok(albums);
+            }
+
+            var sortedAlbums = sortBy.Trim().ToLowerInvariant() switch
+            {
+                "title" => albums.OrderBy(a => a.Title).ToList(),
+                "artist" => albums.OrderBy(a => a.Artist).ToList(),
+                "price" => albums.OrderBy(a => a.Price).ToList(),
+                _ => null
+            };
+
+            if (sortedAlbums is null)
+            {
+                return BadRequest("Invalid sortBy value. Use: title, artist, or price.");
+            }
+
+            return Ok(sortedAlbums);
         }
 
-        // GET api/<AlbumController>/5
+        // Usage:
+        // - GET /albums/{id}
+        // Example: GET /albums/5
         [HttpGet("{id}")]
         public IActionResult Get(int id)
         {
