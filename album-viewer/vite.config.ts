@@ -2,6 +2,9 @@ import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import { resolve } from 'path'
 
+const apiHost = process.env.VITE_ALBUM_API_HOST ?? 'localhost:3000'
+const apiTarget = apiHost.startsWith('http') ? apiHost : `http://${apiHost}`
+
 export default defineConfig({
   plugins: [vue()],
   resolve: {
@@ -13,7 +16,7 @@ export default defineConfig({
     port: 3001,
     proxy: {
       '/albums': {
-        target: 'http://localhost:3000',
+        target: apiTarget,
         changeOrigin: true
       }
     }
