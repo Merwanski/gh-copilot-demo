@@ -1,12 +1,7 @@
 name: Build and Push albums-api to ACR
 
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - albums-api/**
-      - .github/workflows/workflow.yml
+  workflow_dispatch:
 
 jobs:
   build-and-push:
